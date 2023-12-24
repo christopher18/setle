@@ -1,0 +1,17 @@
+/* @keyframes flashGreen {
+    0%, 100% { box-shadow: 0 0 10px green; }
+    50% { box-shadow: 0 0 20px green; }
+  }
+  
+  @keyframes flashRed {
+    0%, 100% { box-shadow: 0 0 10px red; }
+    50% { box-shadow: 0 0 20px red; }
+  }
+  
+  .flash-green {
+    animation: flashGreen 1s;
+  }
+  
+  .flash-red {
+    animation: flashRed 1s;
+  } */
