@@ -1,0 +1,45 @@
+/* NavbarStyles.css */
+
+.appBar {
+    background-color: #4A148C; /* A shade of purple */
+    /* Add more styles for the AppBar here */
+}
+
+.set-game-title {
+    padding-left: 10px;
+    font-family: 'Arial', sans-serif; /* You can choose a more fancy font */
+    font-size: 48px;
+    color: white;
+    text-shadow: 2px 2px 4px #000000; /* Adds a subtle shadow for depth */
+    font-weight: bold;
+    /* Add more styling as per your preference */
+}
+
+.icon {
+    width: 56px;
+    height: auto;
+}
+  
+.title {
+    flex-grow: 1;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    /* Add more styles for the title here */
+}
+  
+.navButton {
+    margin-left: 10px;
+    margin-right: 10px;
+    color: white;
+    /* Add hover effect */
+    transition: background-color 0.3s, color 0.3s;
+}
+  
+.navButton:hover {
+    background-color: #6A1B9A; /* A lighter shade for hover */
+    color: black;
+    /* Add more hover styles here */
+}
+  
+  /* Add responsive design styles or other specific styles as needed */
+  
