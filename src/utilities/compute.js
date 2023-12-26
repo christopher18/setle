@@ -1,3 +1,5 @@
+import seedrandom from 'seedrandom';
+
 const cardAttributes = {
     1: {
         color: "red",
@@ -502,4 +504,26 @@ function isSet(card1, card2, card3) {
     );
 }
 
-export { isSet, cardAttributes };
+// getRandomDeck function
+// returns a deck of size deckSize with random, unique numbers from 1 to deckSize
+function getRandomDeck(deckSize, seed) {
+    console.log("seed ", seed)
+    let cardNumsArr = new Array();
+    for (let i = 1; i <= deckSize; i++) {
+        cardNumsArr.push(i);
+    }
+    const rng = seed ? seedrandom(seed) : Math.random;
+
+    let deckNums = new Array();
+    for (let i = 0; i < deckSize; i++) {
+        
+        const randomNum = Math.floor(rng() * cardNumsArr.length);
+        deckNums.push(cardNumsArr[randomNum]);
+        cardNumsArr.splice(randomNum, 1);
+    }
+
+    return deckNums;
+}
+
+
+export { isSet, getRandomDeck, cardAttributes };

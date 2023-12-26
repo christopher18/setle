@@ -1,5 +1,5 @@
 const Card = ({ number, onClick, isSelected, isSuccessful, isFailed }) => {
-    const cardStyle = isSelected ? { boxShadow: '0 0 10px yellow' } : {};
+    const cardStyle = isSelected ? { boxShadow: '0 0 10px gold' } : {};
     if (isSuccessful) {
         cardStyle.animation = 'flashGreen 1s';
       }
