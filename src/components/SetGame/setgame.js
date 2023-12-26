@@ -34,8 +34,9 @@ const SetGame = () => {
     return count;
   };
 
-  const handleCardClick = (number) => {
+  const handleCardSelection = (number) => {
     setSelectedCards((prevSelectedCards) => {
+        console.log("deck size at start", deckCardNums.length)
       const newSelectedCards = new Set(prevSelectedCards);
       setSuccessfulSet(new Set());
       setFailedSet(new Set());
@@ -61,14 +62,16 @@ const SetGame = () => {
             // Remove the cards from cardNumbers and pull three new cards from remainingCards
             // Replace the cards in cardNumbers with the new cards in the same order
             let newCardNumbers = cardNumbers;
+            let newDeckCardNums = [...deckCardNums];
             for (let i = 0; i < numList.length; i++) {
-                if (deckCardNums.length === 0) {
-                    // remove the cards from cardNumbers as there are no more cards in the deck
+                if (newDeckCardNums.length === 0 || cardNumbers.length > 12) {
+                    // remove the cards from cardNumbers without replacing if there are no more cards in the deck, or if there are more than 12 cards on the board
                     newCardNumbers = newCardNumbers.filter((value) => !numList.includes(value));
                 } else {
                     // replace the cards in cardNumbers with the new cards in the same order
-                    newCardNumbers[newCardNumbers.indexOf(numList[i])] = deckCardNums.pop();
-                    setDeckCardNums(deckCardNums); // don't really need to do this right now because we're not using it
+                    newCardNumbers[newCardNumbers.indexOf(numList[i])] = newDeckCardNums.pop();
+                    console.log("popped 1")
+                    console.log("deck length:", newDeckCardNums.length)
                 }
             }
 
@@ -80,23 +83,25 @@ const SetGame = () => {
             console.log("Number of sets: ", howManySetsLeft);
 
             // Check game over condition
-            if (howManySetsLeft === 0 && deckCardNums.length === 0) {
+            if (howManySetsLeft === 0 && newDeckCardNums.length === 0) {
                 console.log("No sets left and no cards left in deck. Game over!");
             }
 
-            while (howManySetsLeft === 0 && deckCardNums.length > 0) {
+            while (howManySetsLeft === 0 && newDeckCardNums.length > 0) {
                 console.log("No sets found. Adding 3 cards to deck.");
                 for (let i = 0; i < 3; i++) {
-                    if (deckCardNums.length < 1) {
+                    if (newDeckCardNums.length < 1) {
                         console.log("No cards left in deck. Game over!");
                         return new Set();
                     }
-                    let nextDeckNum = deckCardNums.pop();
+                    let nextDeckNum = newDeckCardNums.pop();
+                    console.log("popped 2")
                     newCardNumbers.push(nextDeckNum);
                 }
                 howManySetsLeft = howManySets(newCardNumbers);
                 console.log("Number of sets: ", howManySetsLeft);
             }
+            setDeckCardNums(newDeckCardNums);
         } else {
           console.log("It's not a set!");
           setFailedSet(new Set(numList));
@@ -118,6 +123,7 @@ const SetGame = () => {
         let cardNums = new Array();
         for (let i = 0; i < 12; i++) {
             let nextDeckNum = deckNums.pop();
+            console.log("popping 0")
             cardNums.push(nextDeckNum);
         }
 
@@ -131,6 +137,7 @@ const SetGame = () => {
             console.log("No sets found. Adding 3 cards to deck.");
             for (let i = 0; i < 3; i++) {
                 let nextDeckNum = deckNums.pop();
+                console.log("popping 01")
                 cardNums.push(nextDeckNum);
             }
             numberOfSets = howManySets(cardNums);
@@ -139,6 +146,7 @@ const SetGame = () => {
 
         setTotalNumberSets(numberOfSets);
         setDeckCardNums(deckNums);
+        console.log("deck size at end of first", deckNums.length)
         return cardNums;
     };
     setCardNumbers(generateRandomNumbers(seed));
@@ -146,18 +154,19 @@ const SetGame = () => {
 
   return (
     <div className="setgame">
-    <div className="grid">
-      {cardNumbers.map((number, index) => (
-        <Card 
-          key={index} 
-          number={number} 
-          onClick={handleCardClick} 
-          isSelected={selectedCards.has(number)}
-          isSuccessful={successfulSet.has(number)}
-          isFailed={failedSet.has(number)}
-        />
-      ))}
-    </div>
+        <div className="info"> Deck : <span className="deck">{deckCardNums.length}</span> </div>
+        <div className="grid">
+        {cardNumbers.map((number, index) => (
+            <Card 
+            key={index} 
+            number={number} 
+            onClick={handleCardSelection} 
+            isSelected={selectedCards.has(number)}
+            isSuccessful={successfulSet.has(number)}
+            isFailed={failedSet.has(number)}
+            />
+        ))}
+        </div>
     </div>
     
   );

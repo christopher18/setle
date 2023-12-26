@@ -20,6 +20,7 @@ function App() {
       <NavigationMenu />
       <Routes>
         <Route path="/puzzle" element={<SetPuzzle />} />
+        <Route path="/" element={<SetPuzzle />} />
         <Route path="/puzzle/:seed" element={<SetPuzzle />} />
         <Route path="/game" element={<SetGame />} />
         <Route path="/game/:seed" element={<SetGame />} />

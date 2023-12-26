@@ -1,3 +1,15 @@
 .setgame {
     padding: 20px;
 }
+
+.info {
+    font-size: 16px;
+    color: #333;
+    padding: 10px;
+}
+
+.deck {
+    font-weight: bold;
+    font-size: 24px;
+    color: #333;
+}
