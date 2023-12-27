@@ -13,6 +13,7 @@ const SetGame = () => {
   const [successfulSet, setSuccessfulSet] = useState(new Set());
   const [failedSet, setFailedSet] = useState(new Set());
   const [totalNumberSets, setTotalNumberSets] = useState(0);
+  const [gameWon, setGameWon] = useState(false);
   
   const [deckCardNums, setDeckCardNums] = useState(new Array());
 
@@ -70,13 +71,8 @@ const SetGame = () => {
                 } else {
                     // replace the cards in cardNumbers with the new cards in the same order
                     newCardNumbers[newCardNumbers.indexOf(numList[i])] = newDeckCardNums.pop();
-                    console.log("popped 1")
-                    console.log("deck length:", newDeckCardNums.length)
                 }
             }
-
-            // Update UI with new card numbers
-            setCardNumbers(newCardNumbers);
 
             // Check if there are any sets left
             let howManySetsLeft = howManySets(newCardNumbers);
@@ -85,23 +81,26 @@ const SetGame = () => {
             // Check game over condition
             if (howManySetsLeft === 0 && newDeckCardNums.length === 0) {
                 console.log("No sets left and no cards left in deck. Game over!");
+                setGameWon(true);
             }
 
             while (howManySetsLeft === 0 && newDeckCardNums.length > 0) {
                 console.log("No sets found. Adding 3 cards to deck.");
                 for (let i = 0; i < 3; i++) {
                     if (newDeckCardNums.length < 1) {
-                        console.log("No cards left in deck. Game over!");
+                        setGameWon(true);
                         return new Set();
                     }
                     let nextDeckNum = newDeckCardNums.pop();
-                    console.log("popped 2")
                     newCardNumbers.push(nextDeckNum);
                 }
                 howManySetsLeft = howManySets(newCardNumbers);
                 console.log("Number of sets: ", howManySetsLeft);
             }
+
             setDeckCardNums(newDeckCardNums);
+            // Update UI with new card numbers
+            setCardNumbers(newCardNumbers);
         } else {
           console.log("It's not a set!");
           setFailedSet(new Set(numList));
@@ -154,7 +153,8 @@ const SetGame = () => {
 
   return (
     <div className="setgame">
-        <div className="info"> Deck : <span className="deck">{deckCardNums.length}</span> </div>
+        <div className="info"> Deck : <span className="deck">{deckCardNums.length}</span> 
+        {gameWon && <span className="success_note">You win!! 🎉🎉🎉</span>}</div>
         <div className="grid">
         {cardNumbers.map((number, index) => (
             <Card 
