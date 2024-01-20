@@ -1,17 +1,53 @@
-/* @keyframes flashGreen {
-    0%, 100% { box-shadow: 0 0 10px green; }
-    50% { box-shadow: 0 0 20px green; }
-  }
+@keyframes flashGreen {
+  0%, 100% { box-shadow: 0 0 10px green; }
+  50% { box-shadow: 0 0 20px green; }
+}
+
+@keyframes flashRed {
+  0%, 100% { box-shadow: 0 0 10px red; }
+  50% { box-shadow: 0 0 20px red; }
+}
   
-  @keyframes flashRed {
-    0%, 100% { box-shadow: 0 0 10px red; }
-    50% { box-shadow: 0 0 20px red; }
-  }
+.flash-green {
+  animation: flashGreen 1s;
+}
   
-  .flash-green {
-    animation: flashGreen 1s;
+.flash-red {
+  animation: flashRed 1s;
+}
+
+.selected-card {
+  /* box-shadow: 0 0 10px gold !important; */
+  border: 3px solid #4a148c44 !important;
+  transform: scale(0.95);
+}
+
+.successful-card {
+  animation: flashGreen 1s;
+}
+
+.failed-card {
+  animation: flashRed 1s;
+}
+
+.card {
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer;
+  flex: 1; /* Allow flex grow */
+  /* max-width: 30%; */
+  margin: 10px;
+}
+
+/* Ensures hover logic does not affect mobile version.*/
+@media (min-width: 768px) {
+  .card:hover {
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
   }
-  
-  .flash-red {
-    animation: flashRed 1s;
-  } */
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+}

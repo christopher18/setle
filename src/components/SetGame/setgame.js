@@ -12,10 +12,10 @@ const SetGame = () => {
   const [selectedCards, setSelectedCards] = useState(new Set());
   const [successfulSet, setSuccessfulSet] = useState(new Set());
   const [failedSet, setFailedSet] = useState(new Set());
-  const [totalNumberSets, setTotalNumberSets] = useState(0);
+  // const [totalNumberSets, setTotalNumberSets] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   
-  const [deckCardNums, setDeckCardNums] = useState(new Array());
+  const [deckCardNums, setDeckCardNums] = useState([]);
 
   const howManySets = (cardNumbs) => {
     let count = 0;
@@ -62,7 +62,7 @@ const SetGame = () => {
             setSuccessfulSet(numSet);
             // Remove the cards from cardNumbers and pull three new cards from remainingCards
             // Replace the cards in cardNumbers with the new cards in the same order
-            let newCardNumbers = cardNumbers;
+            let newCardNumbers = [...cardNumbers];
             let newDeckCardNums = [...deckCardNums];
             for (let i = 0; i < numList.length; i++) {
                 if (newDeckCardNums.length === 0 || cardNumbers.length > 12) {
@@ -119,7 +119,7 @@ const SetGame = () => {
         let deckNums = getRandomDeck(81, seed);
         console.log(deckNums)
         
-        let cardNums = new Array();
+        let cardNums = [];
         for (let i = 0; i < 12; i++) {
             let nextDeckNum = deckNums.pop();
             console.log("popping 0")
@@ -143,7 +143,7 @@ const SetGame = () => {
             console.log("Number of sets: ", numberOfSets);
         }
 
-        setTotalNumberSets(numberOfSets);
+        // setTotalNumberSets(numberOfSets);
         setDeckCardNums(deckNums);
         console.log("deck size at end of first", deckNums.length)
         return cardNums;
@@ -153,20 +153,30 @@ const SetGame = () => {
 
   return (
     <div className="setgame">
-        <div className="info"> Deck : <span className="deck">{deckCardNums.length}</span> 
-        {gameWon && <span className="success_note">You win!! 🎉🎉🎉</span>}</div>
-        <div className="grid">
-        {cardNumbers.map((number, index) => (
-            <Card 
-            key={index} 
-            number={number} 
-            onClick={handleCardSelection} 
-            isSelected={selectedCards.has(number)}
-            isSuccessful={successfulSet.has(number)}
-            isFailed={failedSet.has(number)}
-            />
-        ))}
-        </div>
+
+          <div className="info"> 
+            Deck : <span className="deck">{deckCardNums.length}</span> 
+            {gameWon && <span className="success_note">You win!! 🎉🎉🎉</span>}
+          </div>
+
+          <div className="game-grid-container">
+            <div className="game-grid">
+            {cardNumbers.map((number, index) => (
+                <Card 
+                key={index} 
+                number={number} 
+                onMouseDown={handleCardSelection} 
+                isSelected={selectedCards.has(number)}
+                isSuccessful={successfulSet.has(number)}
+                isFailed={failedSet.has(number)}
+                />
+            ))}
+            </div>
+          </div>
+
+          <div className="fill-space"></div>
+          
+        
     </div>
     
   );

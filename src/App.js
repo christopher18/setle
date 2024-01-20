@@ -8,19 +8,11 @@ import './App.css';
 
 function App() {
   return (
-    // <Router>
-    //   <div className="App">
-    //     <Routes>
-    //       <Route path="/:seed" element={<SetGame />} />
-    //       <Route path="/" element={<SetGame />} />
-    //     </Routes>
-    //   </div>
-    // </Router>
     <BrowserRouter>
       <NavigationMenu />
       <Routes>
         <Route path="/puzzle" element={<SetPuzzle />} />
-        <Route path="/" element={<SetPuzzle />} />
+        <Route path="/" element={<SetGame />} />
         <Route path="/puzzle/:seed" element={<SetPuzzle />} />
         <Route path="/game" element={<SetGame />} />
         <Route path="/game/:seed" element={<SetGame />} />

@@ -508,13 +508,13 @@ function isSet(card1, card2, card3) {
 // returns a deck of size deckSize with random, unique numbers from 1 to deckSize
 function getRandomDeck(deckSize, seed) {
     console.log("seed ", seed)
-    let cardNumsArr = new Array();
+    let cardNumsArr = [];
     for (let i = 1; i <= deckSize; i++) {
         cardNumsArr.push(i);
     }
     const rng = seed ? seedrandom(seed) : Math.random;
 
-    let deckNums = new Array();
+    let deckNums = [];
     for (let i = 0; i < deckSize; i++) {
         
         const randomNum = Math.floor(rng() * cardNumsArr.length);
