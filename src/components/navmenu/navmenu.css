@@ -40,6 +40,71 @@
     color: black;
     /* Add more hover styles here */
 }
+
+.hamburger {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px;
+    width: 45px;
+    z-index: 10;
+    /* height: 40px; */
+  }
+  
+  .hamburger span {
+    background-color: lightgray;
+    border-radius: 3px;
+    height: 3px;
+    margin-bottom: 3px;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  
+  .hamburger:hover span {
+    background-color: lightgray; /* Change color on hover */
+  }
+
+  .hamburger.is-active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .hamburger.is-active span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger.is-active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+
+  @keyframes bubbleOut {
+    0% {
+      transform: scale(0.4); /* Start with a slightly smaller scale */
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.5); /* Slightly larger than the final size */
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1); /* Scale to its final size */
+    }
+  }
+  
+  .slide-out-menu {
+    /* ...other styles... */
+    transform-origin: top left; /* Set the origin of the transformation */
+    transition: width 0.3s, transform 0.3s ease-out; /* Include transform for the transition */
+  }
+  
+  .slide-out-menu.is-active {
+    animation: bubbleOut 0.3s forwards; /* Use the animation when the menu is active */
+  }
+  
+  /* Optional: Add more styling or animations */
+  
   
   /* Add responsive design styles or other specific styles as needed */
   
