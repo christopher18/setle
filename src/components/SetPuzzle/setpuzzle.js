@@ -97,20 +97,24 @@ const SetPuzzle = () => {
   }, [seed]);
 
   return (
-    <div>
-      <div className="grid">
-        {cardNumbers.map((number, index) => (
-          <Card 
-            key={index} 
-            number={number} 
-            onMouseDown={handleCardClick} 
-            isSelected={selectedCards.has(number)}
-            isSuccessful={successfulSet.has(number)}
-            isFailed={failedSet.has(number)}
-          />
-        ))}
+    <div className="setgame">
+      <div className="info"> </div>
+      <div className="game-grid-container">
+        <div className="game-grid">
+          {cardNumbers.map((number, index) => (
+            <Card 
+              key={index} 
+              number={number} 
+              onMouseDown={handleCardClick} 
+              isSelected={selectedCards.has(number)}
+              isSuccessful={successfulSet.has(number)}
+              isFailed={failedSet.has(number)}
+            />
+          ))}
+        </div>
+        
       </div>
-      <div className="total-sets">
+      <div className="fill-space">
         <p>Total number of sets found: {setsFound.size}/{totalNumberSets}</p>
       </div>
     </div>
