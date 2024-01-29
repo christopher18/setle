@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import './setgame.css';
@@ -15,7 +15,8 @@ const SetGame = () => {
 
   // timer related states
   const [timer, setTimer] = useState(0);
-  const [timerInterval, setTimerInterval] = useState(null);
+  // const [timerInterval, setTimerInterval] = useState(null);
+  const timerIntervalRef = useRef();
 
   // const [totalNumberSets, setTotalNumberSets] = useState(0);
   const [gameWon, setGameWon] = useState(false);
@@ -89,7 +90,7 @@ const SetGame = () => {
                 console.log("Game won!");
                 setGameWon(true);
                 // stop timer
-                clearInterval(timerInterval);
+                clearInterval(timerIntervalRef);
             }
 
             while (howManySetsLeft === 0 && newDeckCardNums.length > 0) {
@@ -99,7 +100,7 @@ const SetGame = () => {
                       console.log("Game won!");
                       setGameWon(true);
                       // stop timer
-                      clearInterval(timerInterval);
+                      clearInterval(timerIntervalRef);
                       return new Set();
                     }
                     let nextDeckNum = newDeckCardNums.pop();
@@ -169,14 +170,29 @@ const SetGame = () => {
       return cardNums;
     };
     setCardNumbers(generateRandomNumbers(seed));
+  }, [seed]);
+
+  useEffect(() => {
     setTimer(0);
     let startTime = new Date();
-    // clear any existing timer and start a new one
-    clearInterval(timerInterval);
-    setTimerInterval(setInterval(() => {
-        setTimer(Math.floor((new Date() - startTime) / 1000));
-    }, 1000));
-  }, [seed]);
+    // Define the function that will be called by the interval
+    function tick() {
+      setTimer(Math.floor((new Date() - startTime) / 1000));
+    }
+
+    // Clear any existing interval when setting up a new one
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+    }
+
+    // Set up the new interval
+    timerIntervalRef.current = setInterval(tick, 1000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => {
+      clearInterval(timerIntervalRef.current);
+    };
+  }, []);
 
   function formatTime(seconds) {
     const hours = Math.floor(seconds / 3600);
@@ -197,7 +213,13 @@ const SetGame = () => {
   }
 
   const copyToClipboard = () => {
-    const textToCopy = `Game Code: ${seed},\nCompletion Time: ${formatTime(timer)}`;
+    let textToCopy = `https://setle.vercel.app/game/${seed}\nI just completed a Setle Game!\nCode: ${seed},\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
+    if (seed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      if (seed === new Date().toISOString().slice(0, 10)) {
+        textToCopy = `https://setle.vercel.app/game/${seed}\nI just completed the Daily Setle Game for ${seed}!,\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
+      }
+    }
+    
     navigator.clipboard.writeText(textToCopy)
         .then(() => {
             // Handle successful copy
@@ -222,7 +244,7 @@ const SetGame = () => {
               {gameWon && <span className="success_note info-item">You win!! 🎉🎉🎉</span>}
             </div>
             <div className="info-item">
-              {gameWon && <button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
+              {<button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
             </div>
           </div>
 
