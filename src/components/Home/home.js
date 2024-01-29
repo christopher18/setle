@@ -32,22 +32,26 @@ const Home = () => {
     //     navigate("/game/" + dailyKey);
     // }
 
+    // light purple: #4A148CAA
+    // light red: #B71C1C
+    // light green: #1B5E20
+    // light blue: #0D47A1
     return (
         <div className="parent">
             <div className="grid-container-home">
-                <div className="card-menu" onClick={() => navigateTo("/puzzle/123")}>
+                <div className="card-menu" onClick={() => navigateTo("/puzzle")} style={{backgroundColor: "#4A148CAA"}}>
                     <h2>Puzzle</h2>
                     <p className="description">Play a puzzle game</p>
                 </div>
-                <div className="card-menu" onClick={() => navigateTo("/puzzle/" + getDailyKey())}>
+                <div className="card-menu" onClick={() => navigateTo("/puzzle/" + getDailyKey())} style={{backgroundColor: "#B71C1CAA"}}>
                     <h2>Daily Puzzle</h2>
                     <p className="description">Play the daily puzzle</p>
                 </div>
-                <div className="card-menu" onClick={() => navigateTo("/game")}>
+                <div className="card-menu" onClick={() => navigateTo("/game")} style={{backgroundColor: "#1B5E20AA"}}>
                     <h2>Game</h2>
                     <p className="description">Play a game</p>
                 </div>
-                <div className="card-menu" onClick={() => navigateTo("game/" + getDailyKey())}>
+                <div className="card-menu" onClick={() => navigateTo("game/" + getDailyKey())} style={{backgroundColor: "#0D47A1AA"}}>
                     <h2>Daily Game</h2>
                     <p className="description">Play the daily game</p>
                 </div>

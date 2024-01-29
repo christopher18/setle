@@ -100,16 +100,15 @@
     transition: background-color 0.3s, transform 0.2s;
     cursor: pointer;
     outline: none;
-  }
+}
   
-  .button-snazzy:hover {
-    background-color: #7e8cfa; /* A lighter purple for hover */
-    transform: scale(1.05);
-    outline: none;
-  }
+.button-snazzy:hover {
+background-color: #7e8cfa; /* A lighter purple for hover */
+transform: scale(1.05);
+outline: none;
+}
 
-  .info-item {
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
-  
+.info-item {
+font-size: 16px;
+margin-bottom: 10px;
+}

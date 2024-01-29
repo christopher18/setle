@@ -8,6 +8,7 @@ import { isSet, getRandomDeck, cardAttributes } from '../../utilities/compute';
 
 const SetGame = () => {
   const { seed } = useParams();
+  const [effectiveSeed, setEffectiveSeed] = useState(seed || generateRandomString(10));
   const [cardNumbers, setCardNumbers] = useState([]);
   const [selectedCards, setSelectedCards] = useState(new Set());
   const [successfulSet, setSuccessfulSet] = useState(new Set());
@@ -126,18 +127,29 @@ const SetGame = () => {
     });
   };
 
+  function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  };
+
   useEffect(() => {
-    const generateRandomNumbers = (seed) => {
+    const generateRandomNumbers = (effectiveSeed) => {
       // if seed is in a future date (not today), then navigate to /game/date-nicetry
       // check if seed is formatted like yyyy-mm-dd
-      if (seed.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const seedDate = new Date(seed);
+      if (effectiveSeed && effectiveSeed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const seedDate = new Date(effectiveSeed);
         if (seedDate > new Date()) {
           console.log("seed is in the future");
-          window.location.href = "/game/" + seed + "-nice-try-🤣";
+          window.location.href = "/game/" + effectiveSeed + "-nice-try-🤣";
         }
       }
-      let deckNums = getRandomDeck(81, seed);
+  
+      let deckNums = getRandomDeck(81, effectiveSeed);
       console.log(deckNums)
       
       let cardNums = [];
@@ -169,8 +181,8 @@ const SetGame = () => {
       console.log("deck size at end of first", deckNums.length)
       return cardNums;
     };
-    setCardNumbers(generateRandomNumbers(seed));
-  }, [seed]);
+    setCardNumbers(generateRandomNumbers(effectiveSeed));
+  }, [effectiveSeed]);
 
   useEffect(() => {
     setTimer(0);
@@ -213,10 +225,10 @@ const SetGame = () => {
   }
 
   const copyToClipboard = () => {
-    let textToCopy = `https://setle.vercel.app/game/${seed}\nI just completed a Setle Game!\nCode: ${seed},\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
-    if (seed.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      if (seed === new Date().toISOString().slice(0, 10)) {
-        textToCopy = `https://setle.vercel.app/game/${seed}\nI just completed the Daily Setle Game for ${seed}!,\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
+    let textToCopy = `https://setle.vercel.app/game/${effectiveSeed}\nI just completed a Setle Game!\nCode: ${effectiveSeed},\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
+    if (effectiveSeed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      if (effectiveSeed === new Date().toISOString().slice(0, 10)) {
+        textToCopy = `https://setle.vercel.app/game/${effectiveSeed}\nI just completed the Daily Setle Game for ${effectiveSeed}!,\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
       }
     }
     
@@ -244,7 +256,7 @@ const SetGame = () => {
               {gameWon && <span className="success_note info-item">You win!! 🎉🎉🎉</span>}
             </div>
             <div className="info-item">
-              {<button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
+              {gameWon && <button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
             </div>
           </div>
 
