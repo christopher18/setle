@@ -82,6 +82,15 @@ const SetPuzzle = () => {
 
   useEffect(() => {
     const generateRandomNumbers = (seed) => {
+      // if seed is in a future date (not today), then navigate to /game/date-nicetry
+      // check if seed is formatted like yyyy-mm-dd
+      if (seed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const seedDate = new Date(seed);
+        if (seedDate > new Date()) {
+          console.log("seed is in the future");
+          window.location.href = "/game/" + seed + "-nice-try-🤣";
+        }
+      }
       const rng = seed ? seedrandom(seed) : Math.random;
       let numbers = new Set();
       while (numbers.size < 12) {

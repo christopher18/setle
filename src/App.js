@@ -3,23 +3,24 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NavigationMenu from './components/navmenu/navmenu';
 import SetPuzzle from './components/SetPuzzle/setpuzzle';
 import SetGame from './components/SetGame/setgame';
+import Home from './components/Home/home';
 
 import './App.css';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter className="App">
       <NavigationMenu />
       <Routes>
         <Route path="/puzzle" element={<SetPuzzle />} />
-        <Route path="/" element={<SetGame />} />
+        <Route path="/" element={<Home style={{ height: '100%' }} />} />
         <Route path="/puzzle/:seed" element={<SetPuzzle />} />
         <Route path="/game" element={<SetGame />} />
         <Route path="/game/:seed" element={<SetGame />} />
 
         {/* Add more routes for other components */}
       </Routes>
-  </BrowserRouter>
+    </BrowserRouter>
   );
 }
 

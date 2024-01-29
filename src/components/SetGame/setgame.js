@@ -12,6 +12,11 @@ const SetGame = () => {
   const [selectedCards, setSelectedCards] = useState(new Set());
   const [successfulSet, setSuccessfulSet] = useState(new Set());
   const [failedSet, setFailedSet] = useState(new Set());
+
+  // timer related states
+  const [timer, setTimer] = useState(0);
+  const [timerInterval, setTimerInterval] = useState(null);
+
   // const [totalNumberSets, setTotalNumberSets] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   
@@ -81,15 +86,21 @@ const SetGame = () => {
             // Check game over condition
             if (howManySetsLeft === 0 && newDeckCardNums.length === 0) {
                 console.log("No sets left and no cards left in deck. Game over!");
+                console.log("Game won!");
                 setGameWon(true);
+                // stop timer
+                clearInterval(timerInterval);
             }
 
             while (howManySetsLeft === 0 && newDeckCardNums.length > 0) {
                 console.log("No sets found. Adding 3 cards to deck.");
                 for (let i = 0; i < 3; i++) {
                     if (newDeckCardNums.length < 1) {
-                        setGameWon(true);
-                        return new Set();
+                      console.log("Game won!");
+                      setGameWon(true);
+                      // stop timer
+                      clearInterval(timerInterval);
+                      return new Set();
                     }
                     let nextDeckNum = newDeckCardNums.pop();
                     newCardNumbers.push(nextDeckNum);
@@ -116,47 +127,103 @@ const SetGame = () => {
 
   useEffect(() => {
     const generateRandomNumbers = (seed) => {
-        let deckNums = getRandomDeck(81, seed);
-        console.log(deckNums)
-        
-        let cardNums = [];
-        for (let i = 0; i < 12; i++) {
-            let nextDeckNum = deckNums.pop();
-            console.log("popping 0")
-            cardNums.push(nextDeckNum);
+      // if seed is in a future date (not today), then navigate to /game/date-nicetry
+      // check if seed is formatted like yyyy-mm-dd
+      if (seed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const seedDate = new Date(seed);
+        if (seedDate > new Date()) {
+          console.log("seed is in the future");
+          window.location.href = "/game/" + seed + "-nice-try-🤣";
         }
+      }
+      let deckNums = getRandomDeck(81, seed);
+      console.log(deckNums)
+      
+      let cardNums = [];
+      for (let i = 0; i < 12; i++) {
+          let nextDeckNum = deckNums.pop();
+          console.log("popping 0")
+          cardNums.push(nextDeckNum);
+      }
 
-        console.log(cardNums)
-        console.log(deckNums)
+      console.log(cardNums)
+      console.log(deckNums)
 
-        let numberOfSets = howManySets(cardNums)
-        console.log("Number of sets: ", numberOfSets);
-        
-        while (numberOfSets === 0) {
-            console.log("No sets found. Adding 3 cards to deck.");
-            for (let i = 0; i < 3; i++) {
-                let nextDeckNum = deckNums.pop();
-                console.log("popping 01")
-                cardNums.push(nextDeckNum);
-            }
-            numberOfSets = howManySets(cardNums);
-            console.log("Number of sets: ", numberOfSets);
-        }
+      let numberOfSets = howManySets(cardNums)
+      console.log("Number of sets: ", numberOfSets);
+      
+      while (numberOfSets === 0) {
+          console.log("No sets found. Adding 3 cards to deck.");
+          for (let i = 0; i < 3; i++) {
+              let nextDeckNum = deckNums.pop();
+              console.log("popping 01")
+              cardNums.push(nextDeckNum);
+          }
+          numberOfSets = howManySets(cardNums);
+          console.log("Number of sets: ", numberOfSets);
+      }
 
-        // setTotalNumberSets(numberOfSets);
-        setDeckCardNums(deckNums);
-        console.log("deck size at end of first", deckNums.length)
-        return cardNums;
+      // setTotalNumberSets(numberOfSets);
+      setDeckCardNums(deckNums);
+      console.log("deck size at end of first", deckNums.length)
+      return cardNums;
     };
     setCardNumbers(generateRandomNumbers(seed));
+    setTimer(0);
+    let startTime = new Date();
+    // clear any existing timer and start a new one
+    clearInterval(timerInterval);
+    setTimerInterval(setInterval(() => {
+        setTimer(Math.floor((new Date() - startTime) / 1000));
+    }, 1000));
   }, [seed]);
+
+  function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    let timeString = '';
+
+    if (hours > 0) {
+        timeString += `${hours} hours, `;
+    }
+    if (minutes > 0) {
+        timeString += `${minutes} minutes, `;
+    }
+    timeString += `${remainingSeconds} seconds`;
+
+    return timeString;
+  }
+
+  const copyToClipboard = () => {
+    const textToCopy = `Game Code: ${seed},\nCompletion Time: ${formatTime(timer)}`;
+    navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+            // Handle successful copy
+            console.log('Copied to clipboard!');
+        })
+        .catch(err => {
+            // Handle error
+            console.error('Error copying text: ', err);
+        });
+  };
 
   return (
     <div className="setgame">
-
           <div className="info"> 
-            Deck : <span className="deck">{deckCardNums.length}</span> 
-            {gameWon && <span className="success_note">You win!! 🎉🎉🎉</span>}
+            <div className="info-item">
+              Deck : <span className="deck info-item">{deckCardNums.length}</span> 
+            </div>
+            <div className="info-item">
+              Time : <span className="timer info-item">{formatTime(timer)}</span>
+            </div>
+            <div className="info-item">
+              {gameWon && <span className="success_note info-item">You win!! 🎉🎉🎉</span>}
+            </div>
+            <div className="info-item">
+              {gameWon && <button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
+            </div>
           </div>
 
           <div className="game-grid-container">
@@ -175,8 +242,6 @@ const SetGame = () => {
           </div>
 
           <div className="fill-space"></div>
-          
-        
     </div>
     
   );
