@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import './setpuzzle.css';
 
 import seedrandom from 'seedrandom';
 import Card from '../Card/card';
-import { isSet, cardAttributes } from '../../utilities/compute';
+import { isSet, cardAttributes, generateRandomString } from '../../utilities/compute';
 
 const SetPuzzle = () => {
   const { seed } = useParams();
+  const [effectiveSeed, setEffectiveSeed] = useState(seed || generateRandomString(10));
   const [cardNumbers, setCardNumbers] = useState([]);
   const [selectedCards, setSelectedCards] = useState(new Set());
   const [successfulSet, setSuccessfulSet] = useState(new Set());
   const [failedSet, setFailedSet] = useState(new Set());
   const [totalNumberSets, setTotalNumberSets] = useState(0);
   const [setsFound, setSetsFound] = useState(new Set());
+
+  // timer related states
+  const [timer, setTimer] = useState(0);
+  // const [timerInterval, setTimerInterval] = useState(null);
+  const timerIntervalRef = useRef();
 
   const howManySets = (cardNumbers) => {
     let count = 0;
@@ -38,6 +44,10 @@ const SetPuzzle = () => {
     let setStr = foundSet.sort().join("|");
     setsFound.add(setStr);
     setSetsFound(setsFound);
+    if (setsFound.size === totalNumberSets) {
+      // Destroy the timer so it doesn't keep running
+      clearInterval(timerIntervalRef.current);
+    }
   }
 
   const handleCardClick = (number) => {
@@ -81,17 +91,17 @@ const SetPuzzle = () => {
   };
 
   useEffect(() => {
-    const generateRandomNumbers = (seed) => {
+    const generateRandomNumbers = (effectiveSeed) => {
       // if seed is in a future date (not today), then navigate to /game/date-nicetry
       // check if seed is formatted like yyyy-mm-dd
-      if (seed.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const seedDate = new Date(seed);
+      if (effectiveSeed && effectiveSeed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const seedDate = new Date(effectiveSeed);
         if (seedDate > new Date()) {
           console.log("seed is in the future");
-          window.location.href = "/game/" + seed + "-nice-try-🤣";
+          window.location.href = "/game/" + effectiveSeed + "-nice-try-🤣";
         }
       }
-      const rng = seed ? seedrandom(seed) : Math.random;
+      const rng = seedrandom(effectiveSeed);
       let numbers = new Set();
       while (numbers.size < 12) {
         const randomNum = Math.floor(rng() * 81) + 1;
@@ -102,12 +112,106 @@ const SetPuzzle = () => {
       setTotalNumberSets(howManySets(cardNums));
       return cardNums;
     };
-    setCardNumbers(generateRandomNumbers(seed));
-  }, [seed]);
+    setCardNumbers(generateRandomNumbers(effectiveSeed));
+  }, [effectiveSeed]);
+
+  useEffect(() => {
+    setTimer(0);
+    let startTime = new Date();
+    // Define the function that will be called by the interval
+    function tick() {
+      setTimer(Math.floor((new Date() - startTime) / 1000));
+    }
+
+    // Clear any existing interval when setting up a new one
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+    }
+
+    // Set up the new interval
+    timerIntervalRef.current = setInterval(tick, 1000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => {
+      clearInterval(timerIntervalRef.current);
+    };
+  }, []);
+
+  function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    let timeString = '';
+
+    if (hours > 0) {
+        timeString += `${hours} hours, `;
+    }
+    if (minutes > 0) {
+        timeString += `${minutes} minutes, `;
+    }
+    timeString += `${remainingSeconds} seconds`;
+
+    return timeString;
+  }
+
+  function copyTextToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+  
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        console.log('Text copied to clipboard');
+      } else {
+        console.error('Failed to copy text');
+      }
+    } catch (err) {
+      console.error('Error in copying text: ', err);
+    }
+  
+    document.body.removeChild(textArea);
+  }
+
+  const copyToClipboard = () => {
+    let textToCopy = `https://setle.vercel.app/puzzle/${effectiveSeed}\nI just completed a Setle Puzzle!\nCode: ${effectiveSeed},\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
+    if (effectiveSeed.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      if (effectiveSeed === new Date().toISOString().slice(0, 10)) {
+        textToCopy = `https://setle.vercel.app/puzzle/${effectiveSeed}\nI just completed the Daily Setle Puzzle for ${effectiveSeed}!,\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
+      }
+    }
+    
+    // navigator.clipboard.writeText(textToCopy)
+    //     .then(() => {
+    //         // Handle successful copy
+    //         console.log('Copied to clipboard!');
+    //     })
+    //     .catch(err => {
+    //         // Handle error
+    //         console.error('Error copying text: ', err);
+    //     });
+    copyTextToClipboard(textToCopy);
+  };
 
   return (
     <div className="setgame">
-      <div className="info"> </div>
+      <div className="info">
+        <div>
+          <p>Total number of sets found: {setsFound.size}/{totalNumberSets}</p> 
+        </div>
+        <div className="info-item">
+            Time : <span className="timer info-item">{formatTime(timer)}</span>
+        </div>
+        <div className="info-item">
+              {setsFound.size === totalNumberSets && <span className="success_note info-item">You win!! 🎉🎉🎉</span>}
+        </div>
+        <div className="info-item">
+          {setsFound.size === totalNumberSets && <button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
+        </div>
+      </div>
       <div className="game-grid-container">
         <div className="game-grid">
           {cardNumbers.map((number, index) => (
@@ -124,7 +228,7 @@ const SetPuzzle = () => {
         
       </div>
       <div className="fill-space">
-        <p>Total number of sets found: {setsFound.size}/{totalNumberSets}</p>
+        
       </div>
     </div>
     

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import './setgame.css';
 
 import Card from '../Card/card';
-import { isSet, getRandomDeck, cardAttributes } from '../../utilities/compute';
+import { isSet, getRandomDeck, cardAttributes, generateRandomString } from '../../utilities/compute';
 
 const SetGame = () => {
   const { seed } = useParams();
@@ -91,7 +91,7 @@ const SetGame = () => {
                 console.log("Game won!");
                 setGameWon(true);
                 // stop timer
-                clearInterval(timerIntervalRef);
+                clearInterval(timerIntervalRef.current);
             }
 
             while (howManySetsLeft === 0 && newDeckCardNums.length > 0) {
@@ -101,7 +101,7 @@ const SetGame = () => {
                       console.log("Game won!");
                       setGameWon(true);
                       // stop timer
-                      clearInterval(timerIntervalRef);
+                      clearInterval(timerIntervalRef.current);
                       return new Set();
                     }
                     let nextDeckNum = newDeckCardNums.pop();
@@ -125,16 +125,6 @@ const SetGame = () => {
 
       return newSelectedCards;
     });
-  };
-
-  function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    let result = '';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
   };
 
   useEffect(() => {
@@ -278,7 +268,7 @@ const SetGame = () => {
               {gameWon && <span className="success_note info-item">You win!! 🎉🎉🎉</span>}
             </div>
             <div className="info-item">
-              {<button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
+              {gameWon && <button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
             </div>
           </div>
 
