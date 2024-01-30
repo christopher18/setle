@@ -224,6 +224,27 @@ const SetGame = () => {
     return timeString;
   }
 
+  function copyTextToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+  
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        console.log('Text copied to clipboard');
+      } else {
+        console.error('Failed to copy text');
+      }
+    } catch (err) {
+      console.error('Error in copying text: ', err);
+    }
+  
+    document.body.removeChild(textArea);
+  }
+
   const copyToClipboard = () => {
     let textToCopy = `https://setle.vercel.app/game/${effectiveSeed}\nI just completed a Setle Game!\nCode: ${effectiveSeed},\nCompletion Time: ${formatTime(timer)}\nThink you can beat my time?`;
     if (effectiveSeed.match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -232,15 +253,16 @@ const SetGame = () => {
       }
     }
     
-    navigator.clipboard.writeText(textToCopy)
-        .then(() => {
-            // Handle successful copy
-            console.log('Copied to clipboard!');
-        })
-        .catch(err => {
-            // Handle error
-            console.error('Error copying text: ', err);
-        });
+    // navigator.clipboard.writeText(textToCopy)
+    //     .then(() => {
+    //         // Handle successful copy
+    //         console.log('Copied to clipboard!');
+    //     })
+    //     .catch(err => {
+    //         // Handle error
+    //         console.error('Error copying text: ', err);
+    //     });
+    copyTextToClipboard(textToCopy);
   };
 
   return (
