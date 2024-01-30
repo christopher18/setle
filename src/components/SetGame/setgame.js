@@ -256,7 +256,7 @@ const SetGame = () => {
               {gameWon && <span className="success_note info-item">You win!! 🎉🎉🎉</span>}
             </div>
             <div className="info-item">
-              {gameWon && <button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
+              {<button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
             </div>
           </div>
 
