@@ -37,7 +37,7 @@
   cursor: pointer;
   flex: 1; /* Allow flex grow */
   /* max-width: 30%; */
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 /* Ensures hover logic does not affect mobile version.*/
@@ -51,3 +51,57 @@
   width: 100%;
   height: auto;
 }
+
+.nofront {
+  display: none;
+}
+
+.noback {
+  display: none;
+}
+
+.svg-container {
+  /* Makes the container flexible */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100%; /* Adjust as needed */
+  width: 100%; /* Adjust as needed */
+}
+
+.card-container {
+  /* Makes the container flexible */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100%; /* Adjust as needed */
+  width: 100%; /* Adjust as needed */
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+/* .card-container {
+  perspective: 1000px;
+} */
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+/* .card.flipped .card-inner {
+  transform: rotateY(180deg);
+} */
+
+/* .front, .back {
+  backface-visibility: hidden;
+} */
+
+/* .back {
+  transform: rotateY(180deg);
+} */

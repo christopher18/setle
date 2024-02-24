@@ -3,6 +3,7 @@
 .appBar {
     background-color: #4A148C; /* A shade of purple */
     /* Add more styles for the AppBar here */
+    z-index: 1000; /* Set the z-index to a high value */
 }
 
 .set-game-title {

@@ -10,6 +10,7 @@ import './App.css';
 function App() {
   return (
     <BrowserRouter className="App">
+      <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       <NavigationMenu />
       <Routes>
         <Route path="/puzzle" element={<SetPuzzle />} />

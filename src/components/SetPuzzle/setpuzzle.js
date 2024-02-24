@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import './setpuzzle.css';
 
 import seedrandom from 'seedrandom';
-import Card from '../Card/card';
+import {Card} from '../Card/card';
 import { isSet, cardAttributes, generateRandomString } from '../../utilities/compute';
 
 const SetPuzzle = () => {
@@ -222,6 +222,7 @@ const SetPuzzle = () => {
               isSelected={selectedCards.has(number)}
               isSuccessful={successfulSet.has(number)}
               isFailed={failedSet.has(number)}
+              isUp={true}
             />
           ))}
         </div>

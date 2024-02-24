@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import './setgame.css';
 
-import Card from '../Card/card';
+import {Card, flipCard} from '../Card/card';
 import { isSet, getRandomDeck, cardAttributes, generateRandomString } from '../../utilities/compute';
 
 const SetGame = () => {
@@ -13,6 +13,8 @@ const SetGame = () => {
   const [selectedCards, setSelectedCards] = useState(new Set());
   const [successfulSet, setSuccessfulSet] = useState(new Set());
   const [failedSet, setFailedSet] = useState(new Set());
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [pausedTime, setPausedTime] = useState(0);
 
   // timer related states
   const [timer, setTimer] = useState(0);
@@ -43,6 +45,7 @@ const SetGame = () => {
   };
 
   const handleCardSelection = (number) => {
+    console.log("deck size at start", deckCardNums.length)
     setSelectedCards((prevSelectedCards) => {
         console.log("deck size at start", deckCardNums.length)
       const newSelectedCards = new Set(prevSelectedCards);
@@ -71,13 +74,19 @@ const SetGame = () => {
             // Replace the cards in cardNumbers with the new cards in the same order
             let newCardNumbers = [...cardNumbers];
             let newDeckCardNums = [...deckCardNums];
+            console.log(newCardNumbers)
+            console.log(newDeckCardNums.length)
             for (let i = 0; i < numList.length; i++) {
                 if (newDeckCardNums.length === 0 || cardNumbers.length > 12) {
                     // remove the cards from cardNumbers without replacing if there are no more cards in the deck, or if there are more than 12 cards on the board
                     newCardNumbers = newCardNumbers.filter((value) => !numList.includes(value));
+                    console.log("here 1")
                 } else {
                     // replace the cards in cardNumbers with the new cards in the same order
                     newCardNumbers[newCardNumbers.indexOf(numList[i])] = newDeckCardNums.pop();
+                    console.log('here 2')
+                    console.log(newCardNumbers)
+                    console.log(newDeckCardNums.length)
                 }
             }
 
@@ -110,10 +119,8 @@ const SetGame = () => {
                 howManySetsLeft = howManySets(newCardNumbers);
                 console.log("Number of sets: ", howManySetsLeft);
             }
-
-            setDeckCardNums(newDeckCardNums);
-            // Update UI with new card numbers
             setCardNumbers(newCardNumbers);
+            setDeckCardNums(newDeckCardNums);
         } else {
           console.log("It's not a set!");
           setFailedSet(new Set(numList));
@@ -255,6 +262,26 @@ const SetGame = () => {
     copyTextToClipboard(textToCopy);
   };
 
+  let toggleTimer = () => {
+    if (!isFlipped) {
+      // Stop the timer
+      setPausedTime(timer);
+      clearInterval(timerIntervalRef.current);
+    } else {
+      // Start the timer
+      let startTime = new Date();
+      function tick() {
+        setTimer(Math.floor((new Date() - startTime) / 1000) + pausedTime);
+      }
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+      timerIntervalRef.current = setInterval(tick, 1000);
+    }
+    // Get all cards in UI and call flipCard on each
+    setIsFlipped(!isFlipped);
+  }
+
   return (
     <div className="setgame">
           <div className="info"> 
@@ -270,6 +297,9 @@ const SetGame = () => {
             <div className="info-item">
               {gameWon && <button className="button-snazzy" onClick={copyToClipboard}>Copy to Clipboard!</button>}
             </div>
+            <div className="info-item">
+              {!gameWon && <button className="button-snazzy" onClick={toggleTimer}>{isFlipped ? "Resume" : "Pause"}</button>}
+            </div>
           </div>
 
           <div className="game-grid-container">
@@ -282,6 +312,7 @@ const SetGame = () => {
                 isSelected={selectedCards.has(number)}
                 isSuccessful={successfulSet.has(number)}
                 isFailed={failedSet.has(number)}
+                isUp={!isFlipped}
                 />
             ))}
             </div>
