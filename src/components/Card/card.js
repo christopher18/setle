@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import cardBack from '../../assets/cardback.svg';
 
 import './card.css';
 
@@ -43,11 +44,7 @@ const Card = ({ number, onMouseDown, isSelected, isSuccessful, isFailed, isUp })
           </div>
           <div className={backClass}>
             <div className="svg-container">
-              <svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                <rect width="300" height="200" fill="#022588" rx="10" ry="10"/>
-                <polygon points="50,100 150,150 250,100 150,50" fill="purple"/>
-                <circle cx="150" cy="100" r="40" fill="green"/>
-              </svg>
+              <img src={cardBack} alt="Card Back" width="100%" height="100%" />
             </div>
           </div>
           
