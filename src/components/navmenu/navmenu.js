@@ -17,10 +17,15 @@ function NavigationMenu() {
         setIsOpen(!isOpen);
     };
 
+    const navigateToHome = () => {
+        // go to home page
+        window.location.href = '/';
+    }
+
     return (
         <AppBar position="static" className="appBar">
             <Toolbar className="appBar">
-                <img src={icon} alt="Icon" className="icon small" /> {/* Displaying the image */}
+                <img src={icon} alt="Icon" className="icon small" onClick={navigateToHome}/> {/* Displaying the image */}
                 <Typography variant="h6" className="set-game-title title">
                     Notset
                 </Typography>
@@ -57,7 +62,6 @@ function NavigationMenu() {
                     paddingRight: isOpen ? '10px' : '0',
                     // Add more styling as needed
                 }} 
-                // className={`slide-out-menu ${isOpen ? 'is-active' : ''}`}
                 >
                     <Button color="inherit" component={Link} to="/" className="navButton" onClick={togglePanel}>
                         Home

@@ -19,6 +19,7 @@
 .icon {
     width: 56px;
     height: auto;
+    cursor: pointer;
 }
   
 .title {
