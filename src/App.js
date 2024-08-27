@@ -4,6 +4,7 @@ import NavigationMenu from './components/navmenu/navmenu';
 import SetPuzzle from './components/SetPuzzle/setpuzzle';
 import SetGame from './components/SetGame/setgame';
 import Home from './components/Home/home';
+import { Analytics } from '@vercel/analytics/react';
 
 import './App.css';
 
@@ -21,6 +22,7 @@ function App() {
 
         {/* Add more routes for other components */}
       </Routes>
+      <Analytics />
     </BrowserRouter>
   );
 }
